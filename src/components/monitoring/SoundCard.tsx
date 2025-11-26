@@ -2,6 +2,8 @@ import { Card } from "@/components/ui/card";
 import { Volume2, TrendingUp } from "lucide-react";
 import { useState, useEffect } from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import babyCrying from "@/assets/baby-crying.png";
+import babyHappy from "@/assets/baby-happy.png";
 
 const SoundCard = () => {
   const [isCrying, setIsCrying] = useState(false);
@@ -55,7 +57,7 @@ const SoundCard = () => {
 
       <div className={`rounded-2xl p-4 ${isCrying ? "bg-destructive/10 border border-destructive/20" : "bg-card/50"}`}>
         <div className="flex items-center gap-3 mb-2">
-          <span className="text-3xl">{isCrying ? "😭" : "😊"}</span>
+          <img src={isCrying ? babyCrying : babyHappy} alt={isCrying ? "Baby Crying" : "Baby Happy"} className="w-12 h-12" />
           <div>
             <div className="font-bold text-foreground">Baby Cry Detector</div>
             <div className="text-sm text-muted-foreground">{isCrying ? "Crying detected!" : "No crying detected"}</div>
@@ -68,7 +70,7 @@ const SoundCard = () => {
 
       {soundLevel > 60 && (
         <div className="mt-3 bg-baby-yellow/60 rounded-2xl p-3 flex items-center gap-2">
-          <span>🔊</span>
+          <Volume2 className="w-5 h-5 text-foreground" />
           <span className="text-sm font-medium text-foreground">Loud noise detected in room</span>
         </div>
       )}

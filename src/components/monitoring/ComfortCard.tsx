@@ -1,6 +1,7 @@
 import { Card } from "@/components/ui/card";
 import { ThermometerSun } from "lucide-react";
 import { useState, useEffect } from "react";
+import babyComfort from "@/assets/baby-comfort.png";
 
 const ComfortCard = () => {
   const [temperature, setTemperature] = useState(24);
@@ -34,7 +35,7 @@ const ComfortCard = () => {
       </div>
       
       <div className="flex items-center gap-4 mb-4">
-        <div className="text-6xl">👶</div>
+        <img src={babyComfort} alt="Baby" className="w-20 h-20" />
         <div>
           <div className="text-2xl font-bold text-foreground">{status}</div>
           <div className="text-sm text-muted-foreground">Baby Lily</div>
@@ -55,7 +56,7 @@ const ComfortCard = () => {
       {temperature > 27 && (
         <div className="mt-4 bg-destructive/10 border border-destructive/20 rounded-2xl p-3">
           <div className="flex items-center gap-2 text-destructive text-sm">
-            <span>⚠️</span>
+            <ThermometerSun className="w-5 h-5" />
             <span>Heat Wave Alert! Room is overheating</span>
           </div>
         </div>
