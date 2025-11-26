@@ -6,9 +6,13 @@ import MotionCard from "@/components/monitoring/MotionCard";
 import AirQualityCard from "@/components/monitoring/AirQualityCard";
 import ThingSpeakGraphs from "@/components/monitoring/ThingSpeakGraphs";
 import Loading from "@/components/Loading";
+import BabyNameInput from "@/components/BabyNameInput";
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [babyName, setBabyName] = useState(() => {
+    return localStorage.getItem("babyName") || "Baby";
+  });
 
   useEffect(() => {
     // Simulate loading time
@@ -19,6 +23,11 @@ const Index = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  const handleNameChange = (name: string) => {
+    setBabyName(name);
+    localStorage.setItem("babyName", name);
+  };
+
   if (isLoading) {
     return <Loading />;
   }
@@ -27,19 +36,22 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-[hsl(var(--gradient-start))] to-[hsl(var(--gradient-end))] p-4 md:p-8">
       {/* Header */}
       <header className="bg-primary/90 backdrop-blur-sm rounded-3xl shadow-lg p-6 mb-8">
-        <div className="flex items-center gap-3">
-          <Baby className="w-10 h-10 text-primary-foreground" />
-          <h1 className="text-3xl md:text-4xl font-bold text-primary-foreground">
-            Smart Baby Monitoring System
-          </h1>
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <Baby className="w-10 h-10 text-primary-foreground" />
+            <h1 className="text-3xl md:text-4xl font-bold text-primary-foreground">
+              Smart Baby Monitoring System
+            </h1>
+          </div>
+          <BabyNameInput babyName={babyName} onNameChange={handleNameChange} />
         </div>
       </header>
 
       {/* Main Dashboard Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-        <ComfortCard />
-        <SoundCard />
-        <MotionCard />
+        <ComfortCard babyName={babyName} />
+        <SoundCard babyName={babyName} />
+        <MotionCard babyName={babyName} />
         <AirQualityCard />
       </div>
 

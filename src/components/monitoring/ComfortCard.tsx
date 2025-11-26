@@ -3,7 +3,11 @@ import { ThermometerSun } from "lucide-react";
 import { useState, useEffect } from "react";
 import babyComfort from "@/assets/baby-comfort.png";
 
-const ComfortCard = () => {
+interface ComfortCardProps {
+  babyName: string;
+}
+
+const ComfortCard = ({ babyName }: ComfortCardProps) => {
   const [temperature, setTemperature] = useState(24);
   const [humidity, setHumidity] = useState(55);
   const [status, setStatus] = useState("Comfortable");
@@ -38,7 +42,7 @@ const ComfortCard = () => {
         <img src={babyComfort} alt="Baby" className="w-20 h-20" />
         <div>
           <div className="text-2xl font-bold text-foreground">{status}</div>
-          <div className="text-sm text-muted-foreground">Baby Lily</div>
+          <div className="text-sm text-muted-foreground">{babyName}</div>
         </div>
       </div>
 

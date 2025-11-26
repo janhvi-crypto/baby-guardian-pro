@@ -5,7 +5,11 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import babyCrying from "@/assets/baby-crying.png";
 import babyHappy from "@/assets/baby-happy.png";
 
-const SoundCard = () => {
+interface SoundCardProps {
+  babyName: string;
+}
+
+const SoundCard = ({ babyName }: SoundCardProps) => {
   const [isCrying, setIsCrying] = useState(false);
   const [soundLevel, setSoundLevel] = useState(30);
   const [soundHistory, setSoundHistory] = useState<{ time: string; level: number }[]>([
@@ -59,8 +63,8 @@ const SoundCard = () => {
         <div className="flex items-center gap-3 mb-2">
           <img src={isCrying ? babyCrying : babyHappy} alt={isCrying ? "Baby Crying" : "Baby Happy"} className="w-12 h-12" />
           <div>
-            <div className="font-bold text-foreground">Baby Cry Detector</div>
-            <div className="text-sm text-muted-foreground">{isCrying ? "Crying detected!" : "No crying detected"}</div>
+            <div className="font-bold text-foreground">{babyName} Cry Detector</div>
+            <div className="text-sm text-muted-foreground">{isCrying ? `${babyName} is crying!` : "No crying detected"}</div>
           </div>
         </div>
         <div className="text-xs text-muted-foreground">
