@@ -1,6 +1,10 @@
 import { Card } from "@/components/ui/card";
 import { Footprints, Clock, DoorOpen } from "lucide-react";
 import { useState, useEffect } from "react";
+import babyAwake from "@/assets/baby-awake.png";
+import babySleeping from "@/assets/baby-sleeping.png";
+import personEntering from "@/assets/person-entering.png";
+import door from "@/assets/door.png";
 
 const MotionCard = () => {
   const [isAwake, setIsAwake] = useState(false);
@@ -41,7 +45,7 @@ const MotionCard = () => {
         </div>
 
         <div className="flex items-center gap-4 mb-4">
-          <span className="text-6xl">{isAwake ? "👁️" : "😴"}</span>
+          <img src={isAwake ? babyAwake : babySleeping} alt={isAwake ? "Baby Awake" : "Baby Sleeping"} className="w-20 h-20" />
           <div>
             <div className="text-2xl font-bold text-foreground">{isAwake ? "Baby is Awake" : "Baby is Sleeping"}</div>
             <div className="text-sm text-muted-foreground">Last Sleep detected: {lastMotion}</div>
@@ -65,7 +69,7 @@ const MotionCard = () => {
 
         <div className={`rounded-2xl p-4 ${roomEntry ? "bg-primary/10 border border-primary/20" : "bg-card/50"}`}>
           <div className="flex items-center gap-3">
-            <span className="text-3xl">{roomEntry ? "🚶" : "🚪"}</span>
+            <img src={roomEntry ? personEntering : door} alt={roomEntry ? "Person Entering" : "Door"} className="w-12 h-12" />
             <div>
               <div className="font-bold text-foreground">{roomEntry ? "Someone entered" : "No entry detected"}</div>
               <div className="text-sm text-muted-foreground">Monitoring room safety</div>

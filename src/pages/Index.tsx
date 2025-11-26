@@ -32,7 +32,7 @@ const Index = () => {
       {/* Connection Info Card */}
       <div className="mt-8 bg-baby-blue/50 backdrop-blur-sm rounded-3xl shadow-lg p-6">
         <h2 className="text-xl font-bold text-foreground mb-4 flex items-center gap-2">
-          <span>🔌</span> ThingSpeak Connection Guide
+          ThingSpeak Connection Guide
         </h2>
         <div className="space-y-3 text-sm text-foreground/80">
           <div>

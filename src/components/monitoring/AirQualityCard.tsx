@@ -2,6 +2,9 @@ import { Card } from "@/components/ui/card";
 import { Wind, CloudRain } from "lucide-react";
 import { useState, useEffect } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import cloudGood from "@/assets/cloud-good.png";
+import cloudModerate from "@/assets/cloud-moderate.png";
+import cloudUnhealthy from "@/assets/cloud-unhealthy.png";
 
 const AirQualityCard = () => {
   const [airQuality, setAirQuality] = useState(92);
@@ -20,13 +23,13 @@ const AirQualityCard = () => {
       setAirQuality(Math.floor(score));
 
       if (score >= 80) {
-        setStatus("Good 😊");
+        setStatus("Good");
         setNeedsVentilation(false);
       } else if (score >= 60) {
-        setStatus("Moderate 😐");
+        setStatus("Moderate");
         setNeedsVentilation(false);
       } else {
-        setStatus("Unhealthy 😷");
+        setStatus("Unhealthy");
         setNeedsVentilation(true);
       }
     }, 6000);
@@ -44,7 +47,11 @@ const AirQualityCard = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <div className="flex items-center justify-center mb-4">
-            <span className="text-6xl">☁️</span>
+            <img 
+              src={airQuality >= 80 ? cloudGood : airQuality >= 60 ? cloudModerate : cloudUnhealthy} 
+              alt="Air Quality" 
+              className="w-24 h-24" 
+            />
           </div>
 
           <div className="text-center mb-4">
