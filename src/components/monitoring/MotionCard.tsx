@@ -6,7 +6,11 @@ import babySleeping from "@/assets/baby-sleeping.png";
 import personEntering from "@/assets/person-entering.png";
 import door from "@/assets/door.png";
 
-const MotionCard = () => {
+interface MotionCardProps {
+  babyName: string;
+}
+
+const MotionCard = ({ babyName }: MotionCardProps) => {
   const [isAwake, setIsAwake] = useState(false);
   const [sleepDuration, setSleepDuration] = useState(0);
   const [lastMotion, setLastMotion] = useState("2 min ago");
@@ -47,7 +51,7 @@ const MotionCard = () => {
         <div className="flex items-center gap-4 mb-4">
           <img src={isAwake ? babyAwake : babySleeping} alt={isAwake ? "Baby Awake" : "Baby Sleeping"} className="w-20 h-20" />
           <div>
-            <div className="text-2xl font-bold text-foreground">{isAwake ? "Baby is Awake" : "Baby is Sleeping"}</div>
+            <div className="text-2xl font-bold text-foreground">{isAwake ? `${babyName} is Awake` : `${babyName} is Sleeping`}</div>
             <div className="text-sm text-muted-foreground">Last Sleep detected: {lastMotion}</div>
           </div>
         </div>
