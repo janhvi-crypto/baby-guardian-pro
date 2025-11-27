@@ -19,9 +19,9 @@ interface SoundCardProps {
 }
 
 // ThingSpeak Config
-const CHANNEL_ID = "3181835";
-const READ_API_KEY = "RKLNYQG92996XH"; // <-- use your READ key
-const THINGSPEAK_URL = `https://api.thingspeak.com/channels/3181835/feeds.json?api_key=RKLNYQG9K92996XH&results=20`;
+const CHANNEL_ID = "3184419";
+const READ_API_KEY = "L9SZLGO2FSE83JLZ"; // <-- use your READ key
+const THINGSPEAK_URL = `https://api.thingspeak.com/channels/ 3184419/feeds.json?api_key=L9SZLGO2FSE83JLZ&results=20`;
 
 const SoundCard = ({ babyName }: SoundCardProps) => {
   const [soundLevel, setSoundLevel] = useState<number>(30);
