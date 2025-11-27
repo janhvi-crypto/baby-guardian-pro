@@ -47,7 +47,7 @@ const ThingSpeakGraphs = () => {
       // 🟣 GAS SENSOR
       const gasDataProcessed = data.feeds.map((feed: any) => ({
         time: new Date(feed.created_at).toLocaleTimeString(),
-        ppm: parseFloat(feed.field5),           // Gas (field5)
+        ppm: parseFloat(feed.field4),           // Gas (field5)
       }));
 
       setTempHumidityData(tempHumData);
