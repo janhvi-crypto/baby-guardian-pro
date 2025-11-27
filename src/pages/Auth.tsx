@@ -8,7 +8,6 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 import babyComfort from "@/assets/baby-comfort.png";
-import Loading from "@/components/Loading";
 
 const authSchema = z.object({
   email: z.string().email("Invalid email address").max(255),
@@ -20,7 +19,6 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [redirecting, setRedirecting] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -28,15 +26,13 @@ const Auth = () => {
     // Check if user is already logged in
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        setRedirecting(true);
-        setTimeout(() => navigate("/"), 500);
+        navigate("/");
       }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
-        setRedirecting(true);
-        setTimeout(() => navigate("/"), 500);
+        navigate("/");
       }
     });
 
@@ -76,7 +72,6 @@ const Auth = () => {
             title: "Welcome back! 👶",
             description: "Successfully logged in.",
           });
-          setRedirecting(true);
         }
       } else {
         const { error } = await supabase.auth.signUp({
@@ -106,7 +101,6 @@ const Auth = () => {
             title: "Account created! 🎉",
             description: "Welcome to Baby Monitor!",
           });
-          setRedirecting(true);
         }
       }
     } catch (error) {
@@ -121,10 +115,6 @@ const Auth = () => {
       setLoading(false);
     }
   };
-
-  if (redirecting) {
-    return <Loading />;
-  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50 px-4">
