@@ -15,6 +15,7 @@ import {
 
 import babyCrying from "@/assets/baby-crying.png";
 import babyHappy from "@/assets/baby-happy.png";
+import { toast } from "@/hooks/use-toast";
 
 const THINGSPEAK_LATEST =
   "https://api.thingspeak.com/channels/3184419/feeds/last.json?api_key=L9SZLGO2FSE83JLZ&results=20";
@@ -23,6 +24,7 @@ const SoundCard = ({ babyName }: { babyName: string }) => {
   const [soundLevel, setSoundLevel] = useState(0);
   const [isCrying, setIsCrying] = useState(false);
   const [soundHistory, setSoundHistory] = useState<any[]>([]);
+  const [hasAlerted, setHasAlerted] = useState(false);
 
   const fetchSound = async () => {
     try {
@@ -33,7 +35,19 @@ const SoundCard = ({ babyName }: { babyName: string }) => {
       const cry = parseInt(data.field4);
 
       setSoundLevel(sound);
-      setIsCrying(cry === 1);
+      const wasCrying = cry === 1;
+      setIsCrying(wasCrying);
+
+      if (wasCrying && !hasAlerted) {
+        toast({
+          title: "👶 Baby Alert",
+          description: `${babyName} is crying!`,
+          variant: "destructive",
+        });
+        setHasAlerted(true);
+      } else if (!wasCrying) {
+        setHasAlerted(false);
+      }
 
       const now = new Date().toLocaleTimeString();
 
@@ -48,37 +62,37 @@ const SoundCard = ({ babyName }: { babyName: string }) => {
   }, []);
 
   return (
-    <Card className="bg-baby-purple/50 p-6 rounded-3xl shadow-lg">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-bold">Sound Level History</h3>
-        <Volume2 className="w-6 h-6 text-primary" />
+    <Card className="bg-baby-purple/50 p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-lg">
+      <div className="flex justify-between items-center mb-3 sm:mb-4">
+        <h3 className="text-base sm:text-lg font-bold">Sound Level History</h3>
+        <Volume2 className="w-5 h-5 sm:w-6 sm:h-6 text-primary" />
       </div>
 
-      <div className="h-36">
+      <div className="h-28 sm:h-36">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={soundHistory}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="time" />
-            <YAxis />
+            <XAxis dataKey="time" fontSize={10} />
+            <YAxis fontSize={10} />
             <Tooltip />
-            <Line type="monotone" dataKey="level" stroke="#8a4fff" />
+            <Line type="monotone" dataKey="level" stroke="#8a4fff" strokeWidth={2} />
           </LineChart>
         </ResponsiveContainer>
       </div>
 
       <div
-        className={`mt-4 p-4 rounded-xl ${
+        className={`mt-3 sm:mt-4 p-3 sm:p-4 rounded-xl ${
           isCrying ? "bg-red-200/50 border border-red-400" : "bg-card/50"
         }`}
       >
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <img
             src={isCrying ? babyCrying : babyHappy}
-            className="w-12 h-12"
+            className="w-10 h-10 sm:w-12 sm:h-12"
           />
           <div>
-            <h4 className="font-bold">{babyName} Cry Detector</h4>
-            <p className="text-sm">
+            <h4 className="text-sm sm:text-base font-bold">{babyName} Cry Detector</h4>
+            <p className="text-xs sm:text-sm">
               {isCrying ? "Baby is Crying 😢" : "No crying detected 😊"}
             </p>
           </div>
