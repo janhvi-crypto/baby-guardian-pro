@@ -9,7 +9,7 @@ import personEntering from "@/assets/person-entering.png";
 import door from "@/assets/door.png";
 
 const THINGSPEAK_LATEST =
-  "https://api.thingspeak.com/channels/3184419/feeds/last.json?api_key=L9SZLGO2FSE83JLZ";
+  "https://api.thingspeak.com/channels/3184419/feeds/last.json?api_key=L9SZLGO2FSE83JLZ&results=20";
 
 const MotionCard = ({ babyName }: { babyName: string }) => {
   const [isAwake, setIsAwake] = useState(false);
