@@ -17,7 +17,9 @@ const App = () => {
 
   useEffect(() => {
     supabase.auth.getSession().then(() => {
-      setInitialLoading(false);
+      setTimeout(() => {
+        setInitialLoading(false);
+      }, 5000);
     });
   }, []);
 
