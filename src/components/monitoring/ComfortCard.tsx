@@ -1,92 +1,72 @@
+"use client";
+
 import { Card } from "@/components/ui/card";
 import { ThermometerSun } from "lucide-react";
 import { useState, useEffect } from "react";
 import babyComfort from "@/assets/baby-comfort.png";
 
-interface ComfortCardProps {
-  babyName: string;
-}
+const THINGSPEAK_LATEST =
+  "https://api.thingspeak.com/channels/3184419/feeds/last.json?api_key=L9SZLGO2FSE83JLZ&results=20";
 
-// ThingSpeak details
-const CHANNEL_ID = "3181835";
-const READ_API_KEY = "RKLNYQG9K92996XH";
+const ComfortCard = ({ babyName }: { babyName: string }) => {
+  const [temperature, setTemperature] = useState(0);
+  const [humidity, setHumidity] = useState(0);
+  const [status, setStatus] = useState("Loading...");
 
-// Get latest entry from ThingSpeak
-const THINGSPEAK_URL = `https://api.thingspeak.com/channels/3181835/feeds.json?api_key=RKLNYQG9K92996XH&results=20`;
-
-const ComfortCard = ({ babyName }: ComfortCardProps) => {
-  const [temperature, setTemperature] = useState<number>(24);
-  const [humidity, setHumidity] = useState<number>(55);
-  const [status, setStatus] = useState<string>("Comfortable 😊");
-
-  // Determine comfort status based on real data
-  const updateComfortStatus = (temp: number, hum: number) => {
-    if (temp < 20) return "Cold ❄️";
-    if (temp > 27) return "Warm 🔥";
-    if (hum > 70) return "Too Humid 💧";
-    if (hum < 40) return "Too Dry 🏜️";
-    return "Comfortable 😊";
-  };
-
-  const fetchThingSpeakComfort = async () => {
+  const fetchComfort = async () => {
     try {
-      const response = await fetch(THINGSPEAK_URL);
-      if (!response.ok) throw new Error("Failed to fetch ThingSpeak data");
+      const res = await fetch(THINGSPEAK_LATEST);
+      const data = await res.json();
 
-      const data = await response.json();
+      const temp = parseFloat(data.field5);
+      const hum = parseFloat(data.field6);
 
-      // field1 = temperature, field2 = humidity
-      const temp = parseFloat(data.field1);
-      const hum = parseFloat(data.field2);
+      setTemperature(temp);
+      setHumidity(hum);
 
-      if (!isNaN(temp)) setTemperature(temp);
-      if (!isNaN(hum)) setHumidity(hum);
-
-      setStatus(updateComfortStatus(temp, hum));
-    } catch (error) {
-      console.error("ComfortCard Fetch Error:", error);
-    }
+      if (temp < 20) setStatus("Cold ❄️");
+      else if (temp > 27) setStatus("Warm 🔥");
+      else if (hum > 70) setStatus("Too Humid 💧");
+      else if (hum < 40) setStatus("Too Dry 🏜️");
+      else setStatus("Comfortable 😊");
+    } catch {}
   };
 
-  // Run every 15 sec
   useEffect(() => {
-    fetchThingSpeakComfort();
-    const interval = setInterval(fetchThingSpeakComfort, 15000);
-    return () => clearInterval(interval);
+    fetchComfort();
+    const i = setInterval(fetchComfort, 15000);
+    return () => clearInterval(i);
   }, []);
 
   return (
-    <Card className="bg-baby-blue/50 backdrop-blur-sm border-none shadow-lg rounded-3xl p-6 hover:shadow-xl transition-shadow">
+    <Card className="bg-baby-blue/50 p-6 rounded-3xl shadow-lg">
       <div className="flex justify-between items-start mb-4">
-        <h3 className="text-lg font-bold text-foreground">Room Comfort Index</h3>
+        <h3 className="text-lg font-bold">Room Comfort Index</h3>
         <ThermometerSun className="w-6 h-6 text-primary" />
       </div>
 
-      <div className="flex items-center gap-4 mb-4">
-        <img src={babyComfort} alt="Baby" className="w-20 h-20" />
+      <div className="flex gap-4 items-center">
+        <img src={babyComfort} className="w-20 h-20" />
         <div>
-          <div className="text-2xl font-bold text-foreground">{status}</div>
-          <div className="text-sm text-muted-foreground">{babyName}</div>
+          <h2 className="text-2xl font-bold">{status}</h2>
+          <p className="text-sm">{babyName}</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-card/50 rounded-2xl p-3">
-          <div className="text-xs text-muted-foreground mb-1">Temperature</div>
-          <div className="text-2xl font-bold text-foreground">{temperature}°C</div>
+      <div className="grid grid-cols-2 mt-4 gap-4">
+        <div className="bg-card/50 p-3 rounded-xl">
+          <p className="text-xs">Temperature</p>
+          <p className="text-xl font-bold">{temperature} °C</p>
         </div>
-        <div className="bg-card/50 rounded-2xl p-3">
-          <div className="text-xs text-muted-foreground mb-1">Humidity</div>
-          <div className="text-2xl font-bold text-foreground">{humidity}%</div>
+        <div className="bg-card/50 p-3 rounded-xl">
+          <p className="text-xs">Humidity</p>
+          <p className="text-xl font-bold">{humidity}%</p>
         </div>
       </div>
 
-      {temperature > 27 && (
-        <div className="mt-4 bg-destructive/10 border border-destructive/20 rounded-2xl p-3">
-          <div className="flex items-center gap-2 text-destructive text-sm">
-            <ThermometerSun className="w-5 h-5" />
-            <span>Heat Wave Alert! Room is overheating</span>
-          </div>
+      {temperature > 30 && (
+        <div className="mt-4 bg-red-200/50 p-3 rounded-xl text-red-600">
+          ⚠️ High Temperature Alert!
         </div>
       )}
     </Card>
