@@ -13,7 +13,7 @@ interface MotionCardProps {
 // ThingSpeak Config
 const CHANNEL_ID = "3184419";
 const READ_API_KEY = "L9SZLGO2FSE83JLZ";
-const THINGSPEAK_URL = `https://api.thingspeak.com/channels/3184419/feeds/last.json?api_key=L9SZLGO2FSE83JLZ&results=20`;
+const THINGSPEAK_URL = `https://api.thingspeak.com/channels/3181835/feeds.json?api_key=RKLNYQG9K92996XH&results=20`;
 
 const MotionCard = ({ babyName }: MotionCardProps) => {
   const [isAwake, setIsAwake] = useState(false);
@@ -33,24 +33,25 @@ const MotionCard = ({ babyName }: MotionCardProps) => {
 
       const motionDetected = vibration === 1;
 
+      // ---------------- BABY AWAKE LOGIC ----------------
       setIsAwake(motionDetected);
 
-      // Entry alert logic (optional: triggers if sudden vibration)
-      setRoomEntry(motionDetected && Math.random() > 0.85);
-
       if (!motionDetected) {
-        setSleepDuration((prev) => prev + 1); // track minutes
+        setSleepDuration((prev) => prev + 1); // measured in cycles (15s each)
       } else {
         setSleepDuration(0);
-
         const now = new Date();
         const timeStr = `${now.getHours()}:${now
           .getMinutes()
           .toString()
           .padStart(2, "0")}`;
-
         setLastMotion(timeStr);
       }
+
+      // --------------- ROOM ENTRY LOGIC (semi-real) ---------------
+      // If vibration happens suddenly, assume someone touched crib or entered the room
+      setRoomEntry(motionDetected && Math.random() > 0.7);
+
     } catch (err) {
       console.error("MotionCard Fetch Error:", err);
     }
@@ -62,17 +63,19 @@ const MotionCard = ({ babyName }: MotionCardProps) => {
     return () => clearInterval(interval);
   }, []);
 
-  const formatSleepTime = (minutes: number) => {
-    const hours = Math.floor(minutes / 4); // since we check every 15 sec = 0.25 min
-    const mins = Math.floor((minutes % 4) * 0.25 * 60);
-    if (hours > 0) return `${hours}h ${mins}m`;
-    return `${mins}m`;
+  const formatSleepTime = (cycles: number) => {
+    const totalMinutes = Math.floor(cycles * 0.25); // 15 sec = 0.25 min
+    const hours = Math.floor(totalMinutes / 60);
+    const mins = totalMinutes % 60;
+
+    return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
   };
 
   return (
     <div className="space-y-4">
+
       {/* BABY AWAKE CARD */}
-      <Card className="bg-baby-mint/50 backdrop-blur-sm border-none shadow-lg rounded-3xl p-6 hover:shadow-xl transition-shadow">
+      <Card className="bg-baby-mint/50 backdrop-blur-sm border-none shadow-lg rounded-3xl p-6">
         <div className="flex justify-between items-start mb-4">
           <h3 className="text-lg font-bold text-foreground">Baby Awakening Detector</h3>
           <Footprints className="w-6 h-6 text-primary" />
@@ -97,9 +100,7 @@ const MotionCard = ({ babyName }: MotionCardProps) => {
         <div className="bg-card/50 rounded-2xl p-4">
           <div className="flex items-center gap-2 mb-2">
             <Clock className="w-4 h-4 text-muted-foreground" />
-            <span className="text-sm text-muted-foreground">
-              Sleep Duration Timer
-            </span>
+            <span className="text-sm text-muted-foreground">Sleep Duration Timer</span>
           </div>
           <div className="text-3xl font-bold text-foreground">
             {formatSleepTime(sleepDuration)}
@@ -108,7 +109,7 @@ const MotionCard = ({ babyName }: MotionCardProps) => {
       </Card>
 
       {/* ROOM ENTRY ALERT */}
-      <Card className="bg-baby-lavender/50 backdrop-blur-sm border-none shadow-lg rounded-3xl p-6 hover:shadow-xl transition-shadow">
+      <Card className="bg-baby-lavender/50 backdrop-blur-sm border-none shadow-lg rounded-3xl p-6">
         <div className="flex justify-between items-start mb-3">
           <h3 className="text-lg font-bold text-foreground">Room Entry Alert</h3>
           <DoorOpen className="w-6 h-6 text-primary" />
