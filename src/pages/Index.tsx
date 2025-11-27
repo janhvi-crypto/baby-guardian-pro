@@ -1,5 +1,10 @@
-import { Baby, ThermometerSun, Volume2, Footprints, Wind } from "lucide-react";
+import { Baby, LogOut } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import type { User } from "@supabase/supabase-js";
+import { Button } from "@/components/ui/button";
 import ComfortCard from "@/components/monitoring/ComfortCard";
 import SoundCard from "@/components/monitoring/SoundCard";
 import MotionCard from "@/components/monitoring/MotionCard";
@@ -10,26 +15,67 @@ import BabyNameInput from "@/components/BabyNameInput";
 
 const Index = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
   const [babyName, setBabyName] = useState(() => {
     return localStorage.getItem("babyName") || "Baby";
   });
+  const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
-    // Simulate loading time
-    const timer = setTimeout(() => {
+    // Check authentication
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        navigate("/auth");
+        return;
+      }
+      setUser(session.user);
       setIsLoading(false);
-    }, 2000);
+    };
 
-    return () => clearTimeout(timer);
-  }, []);
+    checkAuth();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) {
+        navigate("/auth");
+      } else {
+        setUser(session.user);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [navigate]);
 
   const handleNameChange = (name: string) => {
     setBabyName(name);
     localStorage.setItem("babyName", name);
   };
 
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast({
+        title: "Error",
+        description: "Failed to logout. Please try again.",
+        variant: "destructive",
+      });
+    } else {
+      toast({
+        title: "Goodbye! 👋",
+        description: "You've been logged out successfully.",
+      });
+      navigate("/auth");
+    }
+  };
+
   if (isLoading) {
     return <Loading />;
+  }
+
+  if (!user) {
+    return null;
   }
 
   return (
@@ -43,7 +89,17 @@ const Index = () => {
               Smart Baby Monitoring System
             </h1>
           </div>
-          <BabyNameInput babyName={babyName} onNameChange={handleNameChange} />
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 w-full sm:w-auto">
+            <BabyNameInput babyName={babyName} onNameChange={handleNameChange} />
+            <Button 
+              variant="outline" 
+              onClick={handleLogout}
+              className="bg-white/90 hover:bg-white text-primary border-primary/20"
+            >
+              <LogOut className="w-4 h-4 mr-2" />
+              Logout
+            </Button>
+          </div>
         </div>
       </header>
 
