@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
 import babyComfort from "@/assets/baby-comfort.png";
+import Loading from "@/components/Loading";
 
 const authSchema = z.object({
   email: z.string().email("Invalid email address").max(255),
@@ -19,6 +20,7 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [redirecting, setRedirecting] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -26,18 +28,24 @@ const Auth = () => {
     // Check if user is already logged in
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
+        setRedirecting(true);
         navigate("/");
       }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
+        setRedirecting(true);
         navigate("/");
       }
     });
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  if (redirecting) {
+    return <Loading />;
+  }
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
