@@ -20,7 +20,7 @@ const CHANNEL_ID = "3181835";
 const READ_API_KEY = "RKLNYQG9K92996XH";
 
 // ThingSpeak endpoint (gets last entry)
-const THINGSPEAK_URL = `https://api.thingspeak.com/channels/3181835/feeds/last.json?api_key=RKLNYQG9K92996XH`;
+const THINGSPEAK_URL = `https://api.thingspeak.com/channels/3181835/feeds.json?api_key=RKLNYQG9K92996XH&results=20`;
 
 const AirQualityCard = () => {
   const [airQuality, setAirQuality] = useState<number>(92);
