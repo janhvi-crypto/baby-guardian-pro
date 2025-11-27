@@ -29,14 +29,18 @@ const Auth = () => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
         setRedirecting(true);
-        navigate("/");
+        setTimeout(() => {
+          navigate("/");
+        }, 5000);
       }
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
         setRedirecting(true);
-        navigate("/");
+        setTimeout(() => {
+          navigate("/");
+        }, 5000);
       }
     });
 

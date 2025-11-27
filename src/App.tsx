@@ -16,8 +16,13 @@ const App = () => {
   const [initialLoading, setInitialLoading] = useState(true);
 
   useEffect(() => {
+    const startTime = Date.now();
     supabase.auth.getSession().then(() => {
-      setInitialLoading(false);
+      const elapsedTime = Date.now() - startTime;
+      const remainingTime = Math.max(0, 5000 - elapsedTime);
+      setTimeout(() => {
+        setInitialLoading(false);
+      }, remainingTime);
     });
   }, []);
 
