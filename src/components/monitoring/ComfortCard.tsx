@@ -7,27 +7,51 @@ interface ComfortCardProps {
   babyName: string;
 }
 
+// ThingSpeak details
+const CHANNEL_ID = "3181835";
+const READ_API_KEY = "RKLNYQG9K92996XH";
+
+// Get latest entry from ThingSpeak
+const THINGSPEAK_URL = `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds/last.json?api_key=${READ_API_KEY}`;
+
 const ComfortCard = ({ babyName }: ComfortCardProps) => {
-  const [temperature, setTemperature] = useState(24);
-  const [humidity, setHumidity] = useState(55);
-  const [status, setStatus] = useState("Comfortable");
+  const [temperature, setTemperature] = useState<number>(24);
+  const [humidity, setHumidity] = useState<number>(55);
+  const [status, setStatus] = useState<string>("Comfortable 😊");
 
+  // Determine comfort status based on real data
+  const updateComfortStatus = (temp: number, hum: number) => {
+    if (temp < 20) return "Cold ❄️";
+    if (temp > 27) return "Warm 🔥";
+    if (hum > 70) return "Too Humid 💧";
+    if (hum < 40) return "Too Dry 🏜️";
+    return "Comfortable 😊";
+  };
+
+  const fetchThingSpeakComfort = async () => {
+    try {
+      const response = await fetch(THINGSPEAK_URL);
+      if (!response.ok) throw new Error("Failed to fetch ThingSpeak data");
+
+      const data = await response.json();
+
+      // field1 = temperature, field2 = humidity
+      const temp = parseFloat(data.field1);
+      const hum = parseFloat(data.field2);
+
+      if (!isNaN(temp)) setTemperature(temp);
+      if (!isNaN(hum)) setHumidity(hum);
+
+      setStatus(updateComfortStatus(temp, hum));
+    } catch (error) {
+      console.error("ComfortCard Fetch Error:", error);
+    }
+  };
+
+  // Run every 15 sec
   useEffect(() => {
-    // Simulate sensor data updates
-    const interval = setInterval(() => {
-      const temp = 22 + Math.random() * 6;
-      const hum = 45 + Math.random() * 20;
-      setTemperature(parseFloat(temp.toFixed(1)));
-      setHumidity(parseFloat(hum.toFixed(1)));
-
-      // Determine comfort status
-      if (temp < 20) setStatus("Cold ❄️");
-      else if (temp > 26) setStatus("Warm 🔥");
-      else if (hum > 70) setStatus("Too Humid 💧");
-      else if (hum < 40) setStatus("Too Dry 🏜️");
-      else setStatus("Comfortable 😊");
-    }, 3000);
-
+    fetchThingSpeakComfort();
+    const interval = setInterval(fetchThingSpeakComfort, 15000);
     return () => clearInterval(interval);
   }, []);
 
@@ -37,7 +61,7 @@ const ComfortCard = ({ babyName }: ComfortCardProps) => {
         <h3 className="text-lg font-bold text-foreground">Room Comfort Index</h3>
         <ThermometerSun className="w-6 h-6 text-primary" />
       </div>
-      
+
       <div className="flex items-center gap-4 mb-4">
         <img src={babyComfort} alt="Baby" className="w-20 h-20" />
         <div>
