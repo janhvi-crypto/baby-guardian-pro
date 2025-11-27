@@ -1,12 +1,23 @@
 import { Card } from "@/components/ui/card";
 import { Cloud, Activity } from "lucide-react";
 import { useState, useEffect } from "react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from "recharts";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
 
-// IMPORTANT: Replace these with your actual ThingSpeak channel details
-const CHANNEL_ID = "YOUR_CHANNEL_ID";
-const READ_API_KEY = "YOUR_READ_API_KEY";
-const THINGSPEAK_URL = `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds.json?api_key=${READ_API_KEY}&results=20`;
+
+// 👉👉 REPLACE THESE WITH YOUR REAL VALUES
+const CHANNEL_ID = "3181835";        // Example: "3181835"
+const READ_API_KEY = "RKLNYQG9K92996XH";    // Example: "HEN9O0LQ201OJZ5S"
+
+const THINGSPEAK_URL = `https://api.thingspeak.com/channels/3181835/feeds.json?api_key=RKLNYQG9K92996XH&results=20`;
 
 const ThingSpeakGraphs = () => {
   const [tempHumidityData, setTempHumidityData] = useState<any[]>([]);
@@ -14,73 +25,53 @@ const ThingSpeakGraphs = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Simulate data for demo purposes
-  useEffect(() => {
-    // Generate demo data
-    const demoTempHumidity = Array.from({ length: 20 }, (_, i) => ({
-      time: `${10 + Math.floor(i / 4)}:${(i % 4) * 15}`.padStart(5, "0"),
-      temperature: 22 + Math.random() * 4,
-      humidity: 50 + Math.random() * 15,
-    }));
-
-    const demoGas = Array.from({ length: 20 }, (_, i) => ({
-      time: `${10 + Math.floor(i / 4)}:${(i % 4) * 15}`.padStart(5, "0"),
-      ppm: 350 + Math.random() * 150,
-    }));
-
-    setTempHumidityData(demoTempHumidity);
-    setGasData(demoGas);
-  }, []);
-
-  // Uncomment this function when you have your ThingSpeak channel ready
-  /*
   const fetchThingSpeakData = async () => {
     setIsLoading(true);
     setError("");
-    
+
     try {
       const response = await fetch(THINGSPEAK_URL);
-      if (!response.ok) throw new Error("Failed to fetch data");
-      
+      if (!response.ok) throw new Error("Failed to fetch ThingSpeak data");
+
       const data = await response.json();
-      
-      // Process temperature and humidity data (Field 1 and 2)
+
+      if (!data.feeds) throw new Error("No data found in ThingSpeak channel");
+
+      // 🌡 TEMP & HUMIDITY
       const tempHumData = data.feeds.map((feed: any) => ({
         time: new Date(feed.created_at).toLocaleTimeString(),
-        temperature: parseFloat(feed.field1),
-        humidity: parseFloat(feed.field2),
+        temperature: parseFloat(feed.field1),   // Temp (field1)
+        humidity: parseFloat(feed.field2),      // Humidity (field2)
       }));
-      
-      // Process gas sensor data (Field 5)
+
+      // 🟣 GAS SENSOR
       const gasDataProcessed = data.feeds.map((feed: any) => ({
         time: new Date(feed.created_at).toLocaleTimeString(),
-        ppm: parseFloat(feed.field5),
+        ppm: parseFloat(feed.field5),           // Gas (field5)
       }));
-      
+
       setTempHumidityData(tempHumData);
       setGasData(gasDataProcessed);
+
     } catch (err) {
-      setError("Error fetching data from ThingSpeak. Please check your channel ID and API key.");
       console.error(err);
+      setError("Error fetching ThingSpeak data. Check your Channel ID & API key.");
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    // Fetch data initially
-    fetchThingSpeakData();
-    
-    // Fetch data every 15 seconds
-    const interval = setInterval(fetchThingSpeakData, 15000);
-    
+    fetchThingSpeakData();  
+    const interval = setInterval(fetchThingSpeakData, 15000);  
     return () => clearInterval(interval);
   }, []);
-  */
+
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      {/* Temperature & Humidity Graph */}
+      
+      {/* 🌡 Temperature & Humidity Graph */}
       <Card className="bg-baby-blue/50 backdrop-blur-sm border-none shadow-lg rounded-3xl p-6 hover:shadow-xl transition-shadow">
         <div className="flex justify-between items-start mb-4">
           <div>
@@ -88,9 +79,13 @@ const ThingSpeakGraphs = () => {
               <Cloud className="w-5 h-5" />
               Cloud Graphs (ThingSpeak)
             </h3>
-            <p className="text-xs text-muted-foreground mt-1">Temperature/Humidity Trend (DHT22)</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Temperature/Humidity Trend (DHT22)
+            </p>
           </div>
-          <div className="text-xs bg-primary/10 text-primary px-3 py-1 rounded-full">Live</div>
+          <div className="text-xs bg-primary/10 text-primary px-3 py-1 rounded-full">
+            Live
+          </div>
         </div>
 
         {error && (
@@ -113,18 +108,15 @@ const ThingSpeakGraphs = () => {
                 }}
               />
               <Legend wrapperStyle={{ fontSize: "12px" }} />
-              <Line type="monotone" dataKey="temperature" stroke="#ff6b6b" strokeWidth={2} name="Temp (°C)" dot={{ fill: "#ff6b6b" }} />
-              <Line type="monotone" dataKey="humidity" stroke="#4ecdc4" strokeWidth={2} name="Humidity (%)" dot={{ fill: "#4ecdc4" }} />
+              <Line type="monotone" dataKey="temperature" stroke="#ff6b6b" strokeWidth={2} dot={{ fill: "#ff6b6b" }} name="Temp (°C)" />
+              <Line type="monotone" dataKey="humidity" stroke="#4ecdc4" strokeWidth={2} dot={{ fill: "#4ecdc4" }} name="Humidity (%)" />
             </LineChart>
           </ResponsiveContainer>
         </div>
-
-        <div className="mt-4 text-xs text-muted-foreground">
-          📡 Connect your ESP32 to Wi-Fi, use the ThingSpeak API keys, and watch real-time data appear here!
-        </div>
       </Card>
 
-      {/* Gas Sensor Graph */}
+
+      {/* 🟣 Gas Sensor Graph */}
       <Card className="bg-baby-mint/50 backdrop-blur-sm border-none shadow-lg rounded-3xl p-6 hover:shadow-xl transition-shadow">
         <div className="flex justify-between items-start mb-4">
           <div>
@@ -142,7 +134,11 @@ const ThingSpeakGraphs = () => {
             <LineChart data={gasData}>
               <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
               <XAxis dataKey="time" stroke="hsl(var(--muted-foreground))" style={{ fontSize: "10px" }} />
-              <YAxis stroke="hsl(var(--muted-foreground))" style={{ fontSize: "10px" }} label={{ value: "PPM", angle: -90, position: "insideLeft", style: { fontSize: "10px" } }} />
+              <YAxis
+                stroke="hsl(var(--muted-foreground))"
+                style={{ fontSize: "10px" }}
+                label={{ value: "PPM", angle: -90, position: "insideLeft", style: { fontSize: "10px" } }}
+              />
               <Tooltip
                 contentStyle={{
                   backgroundColor: "hsl(var(--card))",
@@ -151,7 +147,7 @@ const ThingSpeakGraphs = () => {
                 }}
               />
               <Legend wrapperStyle={{ fontSize: "12px" }} />
-              <Line type="monotone" dataKey="ppm" stroke="#a29bfe" strokeWidth={2} name="Gas (PPM)" dot={{ fill: "#a29bfe" }} />
+              <Line type="monotone" dataKey="ppm" stroke="#a29bfe" strokeWidth={2} dot={{ fill: "#a29bfe" }} name="Gas (PPM)" />
             </LineChart>
           </ResponsiveContainer>
         </div>
@@ -171,6 +167,7 @@ const ThingSpeakGraphs = () => {
           </div>
         </div>
       </Card>
+
     </div>
   );
 };
