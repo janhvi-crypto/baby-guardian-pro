@@ -12,7 +12,7 @@ const CHANNEL_ID = "3181835";
 const READ_API_KEY = "RKLNYQG9K92996XH";
 
 // Get latest entry from ThingSpeak
-const THINGSPEAK_URL = `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds/last.json?api_key=${READ_API_KEY}`;
+const THINGSPEAK_URL = `https://api.thingspeak.com/channels/3181835/feeds.json?api_key=RKLNYQG9K92996XH&results=20`;
 
 const ComfortCard = ({ babyName }: ComfortCardProps) => {
   const [temperature, setTemperature] = useState<number>(24);
