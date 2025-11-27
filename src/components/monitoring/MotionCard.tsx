@@ -13,7 +13,7 @@ interface MotionCardProps {
 // ThingSpeak Config
 const CHANNEL_ID = "3184419";
 const READ_API_KEY = "L9SZLGO2FSE83JLZ";
-const THINGSPEAK_URL = `https://api.thingspeak.com/channels/3184419/feeds/last.json?api_key=L9SZLGO2FSE83JLZ`;
+const THINGSPEAK_URL = `https://api.thingspeak.com/channels/3184419/feeds/last.json?api_key=L9SZLGO2FSE83JLZ&results=20`;
 
 const MotionCard = ({ babyName }: MotionCardProps) => {
   const [isAwake, setIsAwake] = useState(false);
