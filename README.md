@@ -9,6 +9,7 @@ An **IoT-based smart baby monitoring system** designed to help parents and guard
 The Smart Baby Monitoring System uses **IoT sensors**, a **cloud data platform**, and a **web dashboard** to continuously track environmental and activity-related parameters around a baby. The system visualizes real-time sensor data and notifies parents when values cross predefined safety thresholds.
 
 This project was developed as an **IoT mini project** with scope for future expansion.
+Link: https://baby-hug-monitor.lovable.app
 
 ---
 
