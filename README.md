@@ -1,73 +1,97 @@
-# Welcome to your Lovable project
+# 👶 Smart Baby Monitoring System  
 
-## Project info
+An **IoT-based smart baby monitoring system** designed to help parents and guardians monitor a baby’s environment and receive timely alerts about safety conditions.
 
-**URL**: https://lovable.dev/projects/b2fe9030-c0f6-4346-86af-332d575b8d5e
+---
 
-## How can I edit this code?
+## 📌 Project Overview  
 
-There are several ways of editing your application.
+The Smart Baby Monitoring System uses **IoT sensors**, a **cloud data platform**, and a **web dashboard** to continuously track environmental and activity-related parameters around a baby. The system visualizes real-time sensor data and notifies parents when values cross predefined safety thresholds.
 
-**Use Lovable**
+This project was developed as an **IoT mini project** with scope for future expansion.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/b2fe9030-c0f6-4346-86af-332d575b8d5e) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🚀 Features  
 
-**Use your preferred IDE**
+- 📡 Real-time monitoring of baby’s environment  
+- 🌡️ Tracks temperature and humidity  
+- 🌫️ Monitors air quality  
+- 🔊 Detects sound levels  
+- 📈 Live and historical data visualization on a web dashboard  
+- ☁️ Cloud integration using **ThingSpeak API**  
+- 🔔 Alerts parents/guardians when unsafe conditions are detected  
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+---
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🛠️ Tech Stack  
 
-Follow these steps:
+### Hardware  
+- ESP32 Microcontroller  
+- Temperature & Humidity Sensor  
+- Gas / Air Quality Sensor  
+- Sound Sensor  
+- Motion / Vibration Sensor  
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### Software & Platforms  
+- Arduino IDE  
+- ThingSpeak Cloud Platform  
+- Web Dashboard (Frontend + Backend)  
+- REST APIs for data fetching and visualization  
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+---
 
-# Step 3: Install the necessary dependencies.
-npm i
+## 🧠 System Architecture  
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+1. Sensors collect environmental and activity data  
+2. ESP32 processes and uploads data to ThingSpeak using API keys  
+3. ThingSpeak stores and visualizes sensor data  
+4. Web dashboard fetches data from ThingSpeak APIs  
+5. Alert logic checks threshold values and notifies parents  
 
-**Edit a file directly in GitHub**
+---
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## 📊 Dashboard  
 
-**Use GitHub Codespaces**
+- Displays real-time sensor readings  
+- Shows historical graphs for better analysis  
+- Provides clear status updates about the baby’s condition  
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+---
 
-## What technologies are used for this project?
+## 🔔 Alerts & Notifications  
 
-This project is built with:
+The system notifies parents/guardians when:
+- Temperature or humidity exceeds safe limits  
+- Air quality degrades  
+- Unusual sound or motion is detected  
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+This helps ensure **quick attention and safety awareness**.
 
-## How can I deploy this project?
+---
 
-Simply open [Lovable](https://lovable.dev/projects/b2fe9030-c0f6-4346-86af-332d575b8d5e) and click on Share -> Publish.
+## 🧪 Testing  
 
-## Can I connect a custom domain to my Lovable project?
+- Tested end-to-end on a **local host environment**  
+- Verified sensor data upload, cloud storage, dashboard visualization, and alert triggering  
 
-Yes, you can!
+---
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## 🔮 Future Scope  
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+- Integration with a **smart baby cot**  
+- Voice-assistant support (e.g., Alexa or similar)  
+- Automated responses like music, toys, or alerts  
+- Mobile app integration  
+
+*(Future scope not implemented in current version)*
+
+---
+
+
+
+---
+
+## 📄 License  
+
+This project is for academic and learning purposes.
